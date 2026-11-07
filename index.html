@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101713">
+<title>08.11 — Birthday.exe</title>
+<style>
+:root{--bg:#090e0b;--panel:#101914;--line:#293b30;--green:#a8e6b2;--muted:#91a096;--cream:#f3eee2;--pink:#f1a9b8}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#1b3023 0%,#090e0b 58%);color:var(--cream);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:20px;display:grid;place-items:center}
+main{width:min(1000px,100%);border:1px solid var(--line);background:rgba(12,19,15,.96);border-radius:18px;overflow:hidden;box-shadow:0 24px 90px #0009}
+.top{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--line);color:var(--muted);font-size:12px}.dot{width:9px;height:9px;border-radius:50%;background:#d58a83}.dot:nth-child(2){background:#d9bd78}.dot:nth-child(3){background:#8ec69b}.filename{margin-left:8px}
+.content{padding:clamp(22px,5vw,48px)}.hero-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(250px,.85fr);align-items:center;gap:8px}.hero-copy{min-width:0}.hero-art{display:block;width:100%;max-height:570px;object-fit:contain;object-position:center;mix-blend-mode:normal;opacity:1;filter:drop-shadow(0 10px 18px #0006);align-self:center}.prompt{color:var(--green);font-size:12px;line-height:1.9}h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(42px,9vw,76px);line-height:.98;letter-spacing:-2px;margin:24px 0 12px}h1 em{color:var(--pink);font-weight:400}.subtitle{color:var(--muted);font:14px/1.8 Arial,sans-serif}.vi-sub{display:block;color:#829b9a;font:11px/1.55 Arial,sans-serif;letter-spacing:.1px;margin-top:2px}.vi-sub.inline{display:inline-block;margin-left:5px;font-size:10px}.music-toggle{margin-left:auto}
+
+.prompt-row{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+.prompt{min-width:0}
+.actions.main-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:12px}
+.action-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;min-height:64px;width:100%;padding:11px 13px;line-height:1.45}
+.action-title{display:block}
+.action-sub{display:block;color:#526f63;font:10px/1.35 Arial,sans-serif;font-weight:400}
+button.secondary .action-sub{color:#829b9a}
+.music-toggle{width:auto;min-width:178px;min-height:52px;flex:0 0 auto;margin:0}
+.music-toggle .action-title{font-size:11px}
+.music-toggle .action-sub{color:#829b9a}
+.rule{height:1px;background:var(--line);margin:26px 0}.status{display:flex;flex-wrap:wrap;gap:10px 22px;color:var(--muted);font-size:11px}.status b{color:var(--green);font-weight:500}
+button{border:1px solid var(--green);background:var(--green);color:#102016;padding:13px 17px;border-radius:8px;font:600 12px ui-monospace,monospace;cursor:pointer;transition:.2s}button:hover{transform:translateY(-2px);box-shadow:0 8px 24px #a8e6b233}button.secondary{background:transparent;color:var(--green)}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.panel{display:none;margin-top:24px;padding:20px;border:1px solid #385443;background:#142219;border-radius:12px;line-height:1.9;font:15px/1.9 Arial,sans-serif}.panel.show{display:block;animation:appear .45s ease}
+.candle-scene{display:none;margin-top:26px;padding:24px 14px 22px;border:1px solid var(--line);border-radius:14px;background:radial-gradient(ellipse at 50% 48%,#293b2c 0%,#111a14 55%,#0d140f 100%);text-align:center;position:relative;overflow:hidden}.candle-scene.show{display:block;animation:appear .5s ease}
+.candle-scene h2{font:italic 29px Georgia,serif;margin:4px 0 6px;color:#f5e9d8}.candle-scene p{font:12px/1.7 Arial,sans-serif;color:#aab8aa;margin:0 auto 8px;max-width:430px}
+.cake{position:relative;width:210px;height:190px;margin:8px auto 12px;display:flex;justify-content:center;align-items:flex-end}
+.cake-top{position:absolute;bottom:48px;width:178px;height:43px;background:linear-gradient(#f4d9c5,#dba98f);border-radius:50% 50% 12px 12px;box-shadow:inset 0 -7px #bd866f}
+.cake-body{position:absolute;bottom:0;width:190px;height:65px;background:linear-gradient(90deg,#b97858,#e3b18d 45%,#b97858);border-radius:12px 12px 20px 20px;box-shadow:inset 0 -9px #8d5945,0 10px 20px #0005}
+.icing{position:absolute;bottom:78px;width:178px;height:27px;border-radius:50%;background:#fff0df;box-shadow:0 4px 0 #e5c4ad}
+.candle{position:absolute;bottom:101px;width:12px;height:59px;border-radius:5px;background:repeating-linear-gradient(135deg,#fff3dd 0 7px,#d88e91 7px 12px);z-index:3}
+.flame{position:absolute;bottom:159px;width:19px;height:29px;border-radius:55% 45% 55% 45%;background:radial-gradient(ellipse at 50% 70%,#fff7bf 0 20%,#ffd36f 35%,#ff8c43 68%,transparent 72%);filter:drop-shadow(0 0 12px #ffb85b);transform-origin:50% 90%;animation:flicker .16s infinite alternate;z-index:4;transition:opacity .35s,transform .35s}
+.flame.off{opacity:0;transform:scale(.1) translateY(10px);animation:none}
+.smoke{display:none;position:absolute;bottom:165px;width:8px;height:32px;border-radius:50%;border-left:2px solid #b9c1b9;filter:blur(1px);animation:smoke 1.5s ease-out forwards;z-index:5}.smoke.show{display:block}
+.candle-controls{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:10px}
+.mic-status{font:11px/1.6 ui-monospace,monospace;color:#a8e6b2;margin-top:12px;min-height:18px}
+.small{margin-top:25px;color:#718176;font-size:10px;line-height:1.8}.heart{color:var(--pink);animation:pulse 1.3s infinite;display:inline-block}
+.footer{border-top:1px solid var(--line);padding:14px 18px;color:#718176;font-size:10px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@keyframes pulse{50%{transform:scale(1.25)}}@keyframes flicker{from{transform:rotate(-3deg) scale(.96)}to{transform:rotate(3deg) scale(1.04)}}@keyframes smoke{to{opacity:0;transform:translate(9px,-38px) scale(2)}}
+@media(max-width:700px){
+ .hero-layout{grid-template-columns:1fr;gap:0}.hero-art{width:min(270px,75%);max-height:320px;margin:-4px auto -18px;object-position:center 38%}
+}
+@media(max-width:560px){
+ .prompt-row{gap:10px;align-items:flex-start}
+ .prompt{font-size:10px;line-height:1.75}
+ .music-toggle{min-width:132px;padding:9px 8px}
+ .music-toggle .action-title{font-size:9px}
+ .music-toggle .action-sub{font-size:9px}
+ .actions.main-actions{grid-template-columns:1fr}
+}
+@media(max-width:480px){body{padding:10px}.content{padding:22px 17px}.footer{font-size:9px}}
+</style>
+</head>
+<body>
+<main>
+ <div class="top"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="filename">birthday.exe — running locally</span></div>
+ <section class="content">
+  <div class="hero-layout">
+   <div class="hero-copy">
+    <div class="prompt-row">
+     <div class="prompt">C:\Users\DinhAnh&gt; run birthday.exe<br>Initializing birthday protocol... <span style="color:#a8e6b2">[OK]</span><br>Loading user profile: <span style="color:#f1a9b8">BE_CUU</span> ... <span style="color:#a8e6b2">[FOUND]</span></div>
+     <button class="secondary music-toggle action-btn" id="musicBtn" aria-pressed="false"><span class="action-title">♫ Play birthday music</span><span class="action-sub">Bật nhạc sinh nhật</span></button>
+    </div>
+    <h1>Happy<br><em>Birthday,</em><br>bé Cừu.</h1><span class="vi-sub">Chúc mừng sinh nhật, bé Cừu.</span>
+    <p class="subtitle">A small birthday build, made especially for you.<span class="vi-sub">Một món quà sinh nhật nhỏ được làm dành riêng cho bé.</span><br>No bugs intended. A few silly features included.<span class="vi-sub">Không có lỗi nào được chủ ý tạo ra đâu. Chỉ có vài tính năng ngộ nghĩnh thôi.</span></p>
+   </div>
+   <img class="hero-art" src="becu_pixel_portrait.png" alt="Chân dung bé Cừu phong cách pixel art bên bánh sinh nhật và một chú cừu nhỏ">
+  </div>
+  <div class="rule"></div>
+  <div class="status"><span>DATE: <b>08.11</b></span><span>VERSION: <b>another_year.exe</b></span><span>STATUS: <b>loved, obviously</b></span></div>
+  <div class="actions main-actions">
+   <button class="action-btn" id="reveal"><span class="action-title">01. Execute birthday message</span><span class="action-sub">Mở lời chúc sinh nhật</span></button>
+   <button class="secondary action-btn" id="candleOpen"><span class="action-title">02. Initialize wish.exe</span><span class="action-sub">Bắt đầu điều ước</span></button>
+  </div>
+  <div class="panel" id="message">
+   <div id="birthdayMoment">
+    Bé muốn đọc lời chúc chứ gì, dễ gì đã có :)), bấm tiếp The birthday breakfast nhé hehe.
+    <div class="actions">
+     <button id="breakfastOpen">The birthday breakfast →</button><span class="vi-sub">Bữa sáng sinh nhật →</span>
+    </div>
+   </div>
+   <div id="birthdayBreakfast" style="display:none">
+    <strong style="color:#f1c1cc">10:00 AM - 08/11/2026 chờ nhé hehe.</strong>
+   </div>
+  </div>
+  <div class="candle-scene" id="candleScene">
+   <h2>Make a wish.</h2><span class="vi-sub">Hãy ước một điều nhé.</span>
+   <p>Take a little breath, close your eyes, and make a wish.<span class="vi-sub">Hít một hơi thật nhẹ, nhắm mắt lại và ước một điều nhé.</span><br>Blow into your microphone to put out the candle — or tap the button.<span class="vi-sub">Thổi vào micro để tắt nến — hoặc chạm vào nút bên dưới.</span></p>
+   <div class="cake" aria-label="A small birthday cake with a lit candle">
+    <div class="cake-body"></div><div class="cake-top"></div><div class="icing"></div>
+    <div class="candle"></div><div class="flame" id="flame"></div><div class="smoke" id="smoke"></div>
+   </div>
+   <div class="candle-controls">
+    <button id="micBtn">🎙 Enable microphone</button><span class="vi-sub">Bật micro</span>
+    <button class="secondary" id="blowBtn">✦ Blow out candle</button><span class="vi-sub">Thổi tắt nến</span>
+   </div>
+   <div class="mic-status" id="micStatus">Candle status: ON · Wish status: pending</div>
+   <div class="panel" id="wishDone" style="margin-top:14px;text-align:left">
+    <strong style="color:#f1c1cc">Wish saved successfully.</strong><span class="vi-sub">Điều ước đã được Đình Anh lưu thành công, hehe.</span><br>
+    May this year bring you more little reasons to smile. No rollback allowed. ♥<span class="vi-sub">Chúc bé Cừu năm nay có thêm thật nhiều lý do nhỏ bé để mỉm cười. Anh không cho phép hoàn tác đâu nhé. ♥</span>
+   </div>
+  </div>
+  <div class="small">NOTE: If you found a bug, please report it after birthday celebrations.<span class="vi-sub">GHI CHÚ: Nếu phát hiện lỗi, hãy báo lại sau khi tiệc sinh nhật kết thúc nhé.</span><br>Priority: cake first, debugging later. <span class="heart">♥</span><span class="vi-sub">Ưu tiên: ăn bánh trước, sửa lỗi tính sau.</span></div>
+ </section>
+ <div class="footer"><span>© Dinh Anh · built with affection</span><span>uptime: forever-ish</span></div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+
+let musicContext=null, musicTimer=null, musicOn=false, musicStep=0;
+const melody=[523.25,659.25,783.99,659.25,587.33,698.46,783.99,698.46,
+              523.25,659.25,880.00,783.99,698.46,659.25,587.33,523.25];
+function playMusicNote(){
+ if(!musicOn||!musicContext)return;
+ const now=musicContext.currentTime, freq=melody[musicStep%melody.length];
+ const osc=musicContext.createOscillator(), gain=musicContext.createGain();
+ osc.type='sine';osc.frequency.setValueAtTime(freq,now);
+ gain.gain.setValueAtTime(0,now);gain.gain.linearRampToValueAtTime(.045,now+.06);
+ gain.gain.exponentialRampToValueAtTime(.001,now+.72);
+ osc.connect(gain);gain.connect(musicContext.destination);
+ osc.start(now);osc.stop(now+.75);
+ // A soft supporting note gives the melody a warm, music-box feel.
+ if(musicStep%4===0){
+  const bass=musicContext.createOscillator(), bg=musicContext.createGain();
+  bass.type='sine';bass.frequency.setValueAtTime(freq/2.0,now);
+  bg.gain.setValueAtTime(0,now);bg.gain.linearRampToValueAtTime(.018,now+.08);
+  bg.gain.exponentialRampToValueAtTime(.001,now+1.15);
+  bass.connect(bg);bg.connect(musicContext.destination);bass.start(now);bass.stop(now+1.2);
+ }
+ musicStep++;
+}
+$('musicBtn').addEventListener('click',async()=>{
+ try{
+  if(!musicContext)musicContext=new (window.AudioContext||window.webkitAudioContext)();
+  if(musicContext.state==='suspended')await musicContext.resume();
+  musicOn=!musicOn;
+  if(musicOn){
+   playMusicNote();musicTimer=setInterval(playMusicNote,520);
+   $('musicBtn').querySelector('.action-title').textContent='♫ Pause birthday music';
+   $('musicBtn').querySelector('.action-sub').textContent='Tắt nhạc sinh nhật';
+   $('musicBtn').setAttribute('aria-pressed','true');
+  }else{
+   clearInterval(musicTimer);musicTimer=null;
+   $('musicBtn').querySelector('.action-title').textContent='♫ Play birthday music';
+   $('musicBtn').querySelector('.action-sub').textContent='Bật nhạc sinh nhật';
+   $('musicBtn').setAttribute('aria-pressed','false');
+  }
+ }catch(e){
+  $('musicBtn').querySelector('.action-title').textContent='♫ Music unavailable';
+  $('musicBtn').querySelector('.action-sub').textContent='Trình duyệt chưa hỗ trợ phát nhạc';
+ }
+});
+
+$('reveal').addEventListener('click',()=>{$('message').classList.toggle('show');$('reveal').querySelector('.action-title').textContent=$('message').classList.contains('show')?'✓ 01. Message opened':'01. Execute birthday message';$('reveal').querySelector('.action-sub').textContent=$('message').classList.contains('show')?'Lời chúc đã mở':'Mở lời chúc sinh nhật'});
+$('breakfastOpen').addEventListener('click',()=>{$('birthdayMoment').style.display='none';$('birthdayBreakfast').style.display='block'});
+$('candleOpen').addEventListener('click',()=>{$('candleScene').classList.add('show');$('candleScene').scrollIntoView({behavior:'smooth',block:'center'})});
+let audioContext, analyser, micStream, listening=false, blown=false, raf;
+function extinguish(){
+ if(blown)return;blown=true;$('flame').classList.add('off');$('smoke').classList.remove('show');void $('smoke').offsetWidth;$('smoke').classList.add('show');
+ $('micStatus').textContent='Candle status: OFF · Wish status: saved ✓';$('wishDone').classList.add('show');
+ if(raf)cancelAnimationFrame(raf);if(micStream)micStream.getTracks().forEach(t=>t.stop());listening=false;$('micBtn').textContent='🎙 Enable microphone';
+}
+$('blowBtn').addEventListener('click',extinguish);
+$('micBtn').addEventListener('click',async()=>{
+ if(blown)return;
+ try{
+  if(!navigator.mediaDevices?.getUserMedia)throw new Error('Microphone unavailable');
+  micStream=await navigator.mediaDevices.getUserMedia({audio:true});audioContext=new (window.AudioContext||window.webkitAudioContext)();analyser=audioContext.createAnalyser();analyser.fftSize=512;audioContext.createMediaStreamSource(micStream).connect(analyser);
+  listening=true;$('micBtn').textContent='🎙 Listening…';$('micStatus').textContent='Listening for a birthday wish… blow gently!';
+  const data=new Uint8Array(analyser.fftSize);let baseline=0,calibration=0,above=0;
+  function detect(){
+   if(!listening||blown)return;analyser.getByteTimeDomainData(data);let sum=0;for(let i=0;i<data.length;i++){let v=(data[i]-128)/128;sum+=v*v}
+   let rms=Math.sqrt(sum/data.length);
+   if(calibration<35){baseline+=(rms-baseline)/(calibration+1);calibration++}
+   else if(rms>Math.max(.055,baseline*2.7))above++;else above=Math.max(0,above-1);
+   if(above>7){extinguish();return}raf=requestAnimationFrame(detect);
+  }detect();
+ }catch(e){$('micStatus').textContent='Microphone unavailable here. Use the button to blow out the candle.';$('micBtn').textContent='🎙 Try microphone again'}
+});
+</script>
+</body></html>
